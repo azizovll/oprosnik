@@ -230,10 +230,13 @@ async function showResults(id) {
   }
 }
 
-function bar(label, n, total) {
+function bar(label, names, total) {
+  const n = names.length;
   const p = total ? Math.round(n / total * 100) : 0;
+  const sorted = [...names].sort((a, b) => a.localeCompare(b, "ru"));
   return `<div class="bar-row"><div class="bar-top"><span>${esc(label)}</span><span>${n} (${p}%)</span></div>
-    <div class="bar"><div style="width:${p}%"></div></div></div>`;
+    <div class="bar"><div style="width:${p}%"></div></div>
+    ${n ? `<div class="voters">${sorted.map(x => `<span class="voter">${esc(x)}</span>`).join("")}</div>` : ""}</div>`;
 }
 
 function fmtAnswer(v) { return Array.isArray(v) ? v.join(", ") : (v == null ? "" : String(v)); }
@@ -274,15 +277,18 @@ function renderResults() {
     html += `<div class="card"><div class="q-label">${i + 1}. ${esc(q.label)}</div>
       <div class="muted small">Ответов: ${vals.length}</div>`;
     if (q.type === "scale") {
-      const nums = vals.map(x => +x.v).filter(n => !isNaN(n));
-      const avg = nums.length ? (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(2) : "—";
+      const nums = vals.map(x => ({ person: x.person, n: +x.v })).filter(x => !isNaN(x.n));
+      const avg = nums.length ? (nums.reduce((a, b) => a + b.n, 0) / nums.length).toFixed(2) : "—";
       html += `<p>Средняя оценка: <b>${avg}</b> из ${q.max || 5}</p>`;
-      for (let k = q.max || 5; k >= 1; k--) html += bar(String(k), nums.filter(n => n === k).length, nums.length);
+      for (let k = q.max || 5; k >= 1; k--) {
+        html += bar(String(k), nums.filter(x => x.n === k).map(x => x.person), nums.length);
+      }
     } else if (q.type === "radio" || q.type === "checkbox") {
-      const counts = {};
-      (q.options || []).forEach(o => counts[o] = 0);
-      vals.forEach(x => [].concat(x.v).forEach(o => counts[o] = (counts[o] || 0) + 1));
-      Object.entries(counts).sort((a, b) => b[1] - a[1]).forEach(([o, n]) => html += bar(o, n, vals.length));
+      const voters = {};
+      (q.options || []).forEach(o => voters[o] = []);
+      vals.forEach(x => [].concat(x.v).forEach(o => (voters[o] = voters[o] || []).push(x.person)));
+      Object.entries(voters).sort((a, b) => b[1].length - a[1].length)
+        .forEach(([o, names]) => html += bar(o, names, vals.length));
     } else {
       html += vals.length
         ? `<div class="text-answers">${vals.map(x => `<p><b>${esc(x.person)}:</b> ${esc(x.v)}</p>`).join("")}</div>`

@@ -147,6 +147,11 @@ textarea { resize: vertical; }
 .bar-top { display: flex; justify-content: space-between; font-size: 14px; gap: 8px; }
 .bar { height: 10px; background: var(--border); border-radius: 999px; overflow: hidden; margin-top: 4px; }
 .bar > div { height: 100%; background: var(--accent); }
+.voters { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.voter {
+  font-size: 12px; padding: 2px 8px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--text);
+}
 .text-answers { max-height: 320px; overflow-y: auto; display: grid; gap: 8px; margin-top: 8px; }
 .text-answers p { margin: 0; padding: 10px; background: var(--bg); border-radius: 8px; font-size: 14px; }
 .person-answers { border-top: 1px solid var(--border); padding: 10px 0; }
