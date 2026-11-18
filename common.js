@@ -1,5 +1,5 @@
 // Общие функции для сайта и админки
-const TARGETS = { all: "Все", boys: "Пацаны", girls: "Девушки" };
+const TARGETS = { all: "Все", boys: "Парни", girls: "Девушки" };
 const QTYPES = {
   radio: "Один вариант",
   checkbox: "Несколько вариантов",

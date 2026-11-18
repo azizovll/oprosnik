@@ -9,7 +9,7 @@ const SURVEY_HEADERS = ["id", "title", "description", "target", "active", "quest
 const RESP_HEADERS = ["time", "surveyId", "person", "category", "group", "answers"];
 const QTYPES = ["radio", "checkbox", "scale", "text", "textarea"];
 const TARGETS = ["all", "boys", "girls"];
-const CAT_RU = { boys: "Пацаны", girls: "Девушки" };
+const CAT_RU = { boys: "Парни", girls: "Девушки" };
 
 // ---------- HTTP ----------
 function doGet(e) {

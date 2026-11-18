@@ -255,8 +255,8 @@ function renderResults() {
     <div class="card">
       <h2>${esc(s.title)}</h2>
       <div class="muted small">Для: ${esc(TARGETS[s.target])} · ${s.active ? "Открыт" : "Закрыт"}</div>
-      ${s.target === "all" ? `<div class="chips">${chips("cat", [["all", "Все"], ["boys", "Пацаны"], ["girls", "Девушки"]])}</div>` : ""}
-      <div class="chips">${chips("group", [["all", "Все группы"], ...GROUPS.map(g => [g.name, g.name])])}</div>
+      ${s.target === "all" ? `<div class="chips">${chips("cat", [["all", "Все"], ["boys", TARGETS.boys], ["girls", TARGETS.girls]])}</div>` : ""}
+      ${GROUPS.length > 1 ? `<div class="chips">${chips("group", [["all", "Все группы"], ...GROUPS.map(g => [g.name, g.name])])}</div>` : ""}
     </div>
     <div class="stats">
       <div class="card stat"><b>${rs.length}</b>ответили</div>
@@ -293,7 +293,7 @@ function renderResults() {
 
   html += `<div class="card"><div class="q-label">Не ответили (${missing.length})</div>
     ${missing.length ? `<div class="name-list">${missing.map(p =>
-      `<span class="chip">${esc(p.name)} <span class="muted">· ${p.category === "boys" ? "П" : "Д"}</span></span>`).join("")}</div>`
+      `<span class="chip">${esc(p.name)} <span class="muted">· ${p.category === "boys" ? "Парень" : "Девушка"}</span></span>`).join("")}</div>`
       : `<p class="muted">Все ответили 🎉</p>`}</div>`;
 
   html += `<div class="card"><div class="q-label">Ответы по людям</div>
@@ -334,7 +334,7 @@ function showPeople() {
     <p class="muted small">Чтобы изменить список, отредактируйте файл people.js и заново опубликуйте сайт.</p>
     ${GROUPS.map(g => `<div class="card"><h2>${esc(g.name)}</h2>
       <div class="two-col">
-        <div><div class="q-label">Пацаны (${g.boys.length})</div><ol>${g.boys.map(n => `<li>${esc(n)}</li>`).join("")}</ol></div>
+        <div><div class="q-label">${TARGETS.boys} (${g.boys.length})</div><ol>${g.boys.map(n => `<li>${esc(n)}</li>`).join("")}</ol></div>
         <div><div class="q-label">Девушки (${g.girls.length})</div><ol>${g.girls.map(n => `<li>${esc(n)}</li>`).join("")}</ol></div>
       </div></div>`).join("")}`;
   root.onclick = e => { if (e.target.closest("[data-act=back]")) renderList(); };

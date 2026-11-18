@@ -18,7 +18,7 @@ function saveMe(m) {
 
 function renderWho() {
   if (!me) { whoami.innerHTML = "Выберите себя из списка"; return; }
-  whoami.innerHTML = `Вы: <b>${esc(me.name)}</b> · ${esc(TARGETS[me.category])} · ${esc(me.group)}
+  whoami.innerHTML = `Вы: <b>${esc(me.name)}</b> · ${esc(TARGETS[me.category])}${GROUPS.length > 1 ? " · " + esc(me.group) : ""}
     — <a href="#" id="changeMe">сменить</a>`;
   document.getElementById("changeMe").onclick = e => {
     e.preventDefault();
@@ -28,6 +28,7 @@ function renderWho() {
 
 // ---------- Выбор себя ----------
 function showPicker(step) {
+  if (step.group == null && GROUPS.length === 1) step = { ...step, group: 0 };
   if (step.group == null) {
     app.innerHTML = `<div class="card"><div class="q-label">Выберите вашу группу</div>
       <div class="options">${GROUPS.map((g, i) =>
@@ -36,14 +37,15 @@ function showPicker(step) {
     return;
   }
   if (!step.category) {
-    app.innerHTML = `<div class="card"><div class="q-label">${esc(GROUPS[step.group].name)} — кто вы?</div>
+    const multi = GROUPS.length > 1;
+    app.innerHTML = `<div class="card"><div class="q-label">${multi ? esc(GROUPS[step.group].name) + " — кто вы?" : "Кто вы?"}</div>
       <div class="cat-grid">
-        <button class="cat-btn" data-c="boys">🙋‍♂️<span>Пацаны</span></button>
-        <button class="cat-btn" data-c="girls">🙋‍♀️<span>Девушки</span></button>
+        <button class="cat-btn" data-c="boys">🙋‍♂️<span>${TARGETS.boys}</span></button>
+        <button class="cat-btn" data-c="girls">🙋‍♀️<span>${TARGETS.girls}</span></button>
       </div>
-      <button class="link-btn" id="back">← Назад</button></div>`;
+      ${multi ? `<button class="link-btn" id="back">← Назад</button>` : ""}</div>`;
     app.querySelectorAll("[data-c]").forEach(b => b.onclick = () => showPicker({ ...step, category: b.dataset.c }));
-    document.getElementById("back").onclick = () => showPicker({});
+    if (multi) document.getElementById("back").onclick = () => showPicker({});
     return;
   }
   const g = GROUPS[step.group];
